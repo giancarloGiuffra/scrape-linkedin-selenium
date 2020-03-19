@@ -3,6 +3,12 @@ from selenium.webdriver import Chrome
 import os
 
 
+def test_profile_scraper_connections():
+    with ProfileScraper(driver_options=HEADLESS_OPTIONS) as ps:
+        profile = ps.scrape(user='austinoboyle')
+    profile_info = profile.to_dict()
+    assert profile_info['personal_info']['contacts'] == '500+'
+
 def test_profile_scraper():
     with ProfileScraper(driver_options=HEADLESS_OPTIONS) as ps:
         profile = ps.scrape(user='austinoboyle')
@@ -26,6 +32,9 @@ def test_profile_scraper():
                  'summary', 'location', 'followers', 'email', 'image']
     for a in non_nulls:
         assert personal_info[a]
+
+    # Contacts
+    assert personal_info['contacts'] == '500+'
 
     # Accomplishments
     accomplishments = profile_info['accomplishments']

@@ -14,6 +14,7 @@ class Profile(ResultsObject):
         """Return dict of personal info about the user"""
         top_card = one_or_default(self.soup, '.pv-top-card-v3')
         contact_info = one_or_default(self.soup, '.pv-contact-info')
+        connections_info = one_or_default(self.soup, 'ul.pv-top-card--list-bullet > li + li')
 
         # Note that some of these selectors may have multiple selections, but
         # get_info takes the first match
@@ -49,6 +50,8 @@ class Profile(ResultsObject):
                                          '.pv-recent-activity-section__follower-count', '')
         personal_info['followers'] = followers_text.replace(
             'followers', '').strip()
+
+        personal_info['contacts'] = re.findall('\d+\W?', connections_info.get_text().strip())[0]
 
         # print(contact_info)
         personal_info.update(get_info(contact_info, {
